@@ -3,11 +3,12 @@ from django.shortcuts import render
 
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
-from .serializers import RegistrationSerializer
+from .serializers import SignUpSerializer
 
-class RegistrationView(generics.CreateAPIView):
+class SignUpView(generics.CreateAPIView):
     queryset = User.objects.all()
     permission_classes = (
         AllowAny,
         )
-    serializer_class = RegistrationSerializer
+    serializer_class = SignUpSerializer
+    

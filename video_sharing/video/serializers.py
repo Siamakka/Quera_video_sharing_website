@@ -4,7 +4,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
 
-class RegistrationSerializer(serializers.ModelSerializer):
+class SignUpSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
@@ -15,6 +15,14 @@ class RegistrationSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             )
+        extra_kwargs = {
+            'first_name': {
+                'required': True,
+            },
+            'last_name': {
+                'required': True,
+            },
+        }
         
     email = serializers.EmailField(
         required = True,
@@ -27,11 +35,14 @@ class RegistrationSerializer(serializers.ModelSerializer):
         validators = [validate_password]
     )
 
-    password2 = serializers.CharField(write_only=True, required=True)
+    password2 = serializers.CharField(
+        write_only=True,
+        required=True,
+        )
 
     def validate(self, data):
         if data['password'] != data['password2']:
-            raise serializers.ValidationError({'password': 'Password fields did not match.'})
+            raise serializers.ValidationError({'password2': 'Password fields did not match.'})
         
         return data
     
