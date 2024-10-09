@@ -120,6 +120,9 @@ class UpdateProfileSerializer(serializers.ModelSerializer):
             'last_name': {
                 'required': True,
             },
+            'email': {
+                'required': True,
+            },
         }
 
     username = serializers.CharField(required=True, validators=[])
@@ -152,4 +155,84 @@ class UpdateProfileSerializer(serializers.ModelSerializer):
 
         return user
     
+
+class AdminChangePasswordSerializer(PasswordConfirmationMixin, serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            'password',
+            'password2',
+        )
+    password = serializers.CharField(
+        write_only = True,
+        required = True,
+        validators = [validate_password]
+    )
+
+    password2 = serializers.CharField(
+        write_only=True,
+        required=True,
+        )
     
+    
+    def validate_old_password(self, value):
+        if not self.context['request'].user.check_password(value):
+            raise serializers.ValidationError({'old_password': 'Old password is incorrect.'})
+        return value
+    
+    def validate(self, data):
+        data = super().validate(data)
+    
+
+    def update(self, instance, validated_data):
+        instance.set_password(validated_data['password'])
+        instance.save()
+
+        return instance
+    
+
+class AdminUpdateProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            'username',
+            'first_name',
+            'last_name',
+            'email',
+        )
+        extra_kwargs = {
+            'first_name': {
+                'required': True,
+            },
+            'last_name': {
+                'required': True,
+            },
+        }
+
+    username = serializers.CharField(required=True, validators=[])
+
+
+    def validate_email(self, value):
+        user = self.instance
+        if User.objects.exclude(pk=user.pk).filter(email=value).exists():
+            raise serializers.ValidationError({'email': 'Email Already taken.'})
+        
+        return value
+
+
+    def validate_username(self, value):
+        user = self.instance
+        if User.objects.exclude(pk=user.pk).filter(username=value).exists():
+            raise serializers.ValidationError({'usernam': 'Username Already taken.'})
+        
+        return value
+
+
+    def update(self, instance, validated_data):
+        instance.username = validated_data['username']
+        instance.email = validated_data['email']
+        instance.first_name = validated_data['first_name']
+        instance.last_name = validated_data['last_name']
+        instance.save()
+
+        return instance

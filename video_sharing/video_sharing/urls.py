@@ -24,7 +24,8 @@ from rest_framework_simplejwt.views import TokenRefreshView
 from video.views import SignUpView
 from video.views import ChangePasswordView
 from video.views import UpdateProfileView
-
+from video.views import AdminChangePasswordView
+from video.views import AdminUpdateProfileView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -34,4 +35,6 @@ urlpatterns = [
     path('api/signup/', SignUpView.as_view(), name='auth_signup'),
     path('api/change_password/', ChangePasswordView.as_view(), name='auth_change_password'),
     path('api/update_profile/', UpdateProfileView.as_view(), name='update_profile'),
+    path('api/admin/change_password/<int:pk>/', AdminChangePasswordView.as_view(), name='auth_admin_change_password'),
+    path('api/admin/update_profile/<int:pk>/', AdminUpdateProfileView.as_view(), name='admin_update_profile'),
 ]
