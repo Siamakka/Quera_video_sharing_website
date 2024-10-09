@@ -36,6 +36,7 @@ class Video(models.Model):
         )
     title = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
+    is_free = models.BooleanField(default=True)
     video_url = models.URLField(null=False, blank=False)
     categories = models.ManyToManyField(Category)
     upload_date = models.DateTimeField(auto_now_add=True)
