@@ -23,6 +23,7 @@ from rest_framework_simplejwt.views import TokenRefreshView
 
 from video.views import SignUpView
 from video.views import ChangePasswordView
+from video.views import UpdateProfileView
 
 
 urlpatterns = [
@@ -32,4 +33,5 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/signup/', SignUpView.as_view(), name='auth_signup'),
     path('api/change_password/', ChangePasswordView.as_view(), name='auth_change_password'),
+    path('api/update_profile/', UpdateProfileView.as_view(), name='update_profile'),
 ]

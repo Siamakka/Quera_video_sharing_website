@@ -104,4 +104,52 @@ class ChangePasswordSerializer(PasswordConfirmationMixin, serializers.ModelSeria
 
         return user
     
+class UpdateProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            'username',
+            'first_name',
+            'last_name',
+            'email',
+        )
+        extra_kwargs = {
+            'first_name': {
+                'required': True,
+            },
+            'last_name': {
+                'required': True,
+            },
+        }
+
+    username = serializers.CharField(required=True, validators=[])
+    email = serializers.EmailField(required = True)
+
+
+    def validate_email(self, value):
+        user = self.context['request'].user
+        if User.objects.exclude(pk=user.pk).filter(email=value).exists():
+            raise serializers.ValidationError({'email': 'Email Already taken.'})
+        
+        return value
+
+
+    def validate_username(self, value):
+        user = self.context['request'].user
+        if User.objects.exclude(pk=user.pk).filter(username=value).exists():
+            raise serializers.ValidationError({'usernam': 'Username Already taken.'})
+        
+        return value
+
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        user.username = validated_data['username']
+        user.email = validated_data['email']
+        user.first_name = validated_data['first_name']
+        user.last_name = validated_data['last_name']
+        user.save()
+
+        return user
+    
     
