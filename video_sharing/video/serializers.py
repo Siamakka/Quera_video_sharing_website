@@ -4,7 +4,14 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
 
-class SignUpSerializer(serializers.ModelSerializer):
+class PasswordConfirmationValiddattionMixin:
+    def validate(self, data):
+        if data['password'] != data['password2']:
+            raise serializers.ValidationError({'password2': 'Password fields did not match.'})
+        
+        return data  
+
+class SignUpSerializer(PasswordConfirmationValiddattionMixin, serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
@@ -39,12 +46,6 @@ class SignUpSerializer(serializers.ModelSerializer):
         write_only=True,
         required=True,
         )
-
-    def validate(self, data):
-        if data['password'] != data['password2']:
-            raise serializers.ValidationError({'password2': 'Password fields did not match.'})
-        
-        return data
     
     def create(self, validated_data):
         user = User.objects.create(
@@ -57,3 +58,20 @@ class SignUpSerializer(serializers.ModelSerializer):
         user.save()
 
         return user
+    
+
+class ChangePasswordSerializer(PasswordConfirmationValiddattionMixin, serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            'old_password',
+            'password',
+            'password2',
+        )
+    
+    def validate_old_password(self, value):
+        if not self.context['request'].user.check_password(value):
+            raise serializers.ValidationError({'old_password': 'Old password is incorrect.'})
+        return value
+    
+    
