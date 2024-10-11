@@ -17,8 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls import include
+from django.urls import re_path
 
 from rest_framework.routers import DefaultRouter
+from rest_framework import permissions
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.views import TokenVerifyView
 from rest_framework_simplejwt.views import TokenRefreshView
@@ -29,11 +31,11 @@ from video.views import UpdateProfileView
 from video.views import AdminChangePasswordView
 from video.views import AdminUpdateProfileView
 
-from django.urls import re_path
-from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from video.viewsets import UserViewSet
+
+from debug_toolbar.toolbar import debug_toolbar_urls
 
 
 
@@ -68,4 +70,5 @@ urlpatterns = [
     path('api/update_profile/', UpdateProfileView.as_view(), name='update_profile'),
     path('api/admin/change_password/<int:pk>/', AdminChangePasswordView.as_view(), name='auth_admin_change_password'),
     path('api/admin/update_profile/<int:pk>/', AdminUpdateProfileView.as_view(), name='admin_update_profile'),
-]
+
+] + debug_toolbar_urls()
