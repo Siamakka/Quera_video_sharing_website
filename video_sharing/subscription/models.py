@@ -35,3 +35,34 @@ class Subscription(models.Model):
     @property
     def is_active(self):
         return self.end_date >= timezone.now()
+    
+
+class Payment(models.Model):
+    PAYMENT_STATUS_CHOICES = [
+        ("pending", "Pending"),
+        ("successful", "Successful"),
+        ("failed", "Failed"),
+    ]
+    subscriptionplan = models.ForeignKey(SubscriptionPlan, on_delete=models.DO_NOTHING)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    transaction_id = models.CharField(max_length=255, null=True, blank=True)
+    payment_status = models.CharField(max_length=10, choices=PAYMENT_STATUS_CHOICES, default="pending")
+    payment_url = models.URLField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Payment {self.transaction_id} - {self.get_payment_status_display()}"
+    
+
+class SubscriptionPayment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="subs_payment")
+    subscription_plan = models.ForeignKey(SubscriptionPlan, on_delete=models.CASCADE)
+    payment = models.ForeignKey(Payment, on_delete=models.CASCADE)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"Subscription for {self.user.username} - Plan {self.subscription_plan.type}"

@@ -32,6 +32,16 @@ from user.views import AdminChangePasswordView
 from user.views import AdminUpdateProfileView
 from user.viewsets import UserViewSet
 
+from video.views import CategoryListCreateView
+from video.views import CategoryDetailView
+from video.views import VideoListCreateView
+from video.views import VideoDetailView
+from video.views import CommentDetailView
+from video.views import CommentListCreateView
+
+from subscription.views import create_payment
+from subscription.views import confirm_payment
+
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
@@ -70,5 +80,12 @@ urlpatterns = [
     path('api/update_profile/', UpdateProfileView.as_view(), name='update_profile'),
     path('api/admin/change_password/<int:pk>/', AdminChangePasswordView.as_view(), name='auth_admin_change_password'),
     path('api/admin/update_profile/<int:pk>/', AdminUpdateProfileView.as_view(), name='admin_update_profile'),
-
+    path('categories/', CategoryListCreateView.as_view(), name='category-list-create'),
+    path('categories/<int:pk>/', CategoryDetailView.as_view(), name='category-detail'),
+    path('videos/', VideoListCreateView.as_view(), name='video-list-create'),
+    path('videos/<int:pk>/', VideoDetailView.as_view(), name='video-detail'),
+    path('comments/', CommentListCreateView.as_view(), name='comment-list-create'),
+    path('comments/<int:pk>/', CommentDetailView.as_view(), name='comment-detail'),
+    path('create-payment/<int:plan_id>/', create_payment, name='create_payment'),
+    path('confirm-payment/<str:transaction_id>/', confirm_payment, name='confirm_payment'),
 ] + debug_toolbar_urls()

@@ -6,5 +6,8 @@ from .models import Subscription, SubscriptionPlan
 @receiver(post_save, sender=User)
 def create_default_subscription(sender, instance, created, **kwargs):
     if created:
-        free_plan = SubscriptionPlan.objects.get(plan_name='free')
-        Subscription.objects.create(user=instance, plan=free_plan)
+        try:
+            free_plan = SubscriptionPlan.objects.get(plan_name='free')
+            Subscription.objects.create(user=instance, plan=free_plan)
+        except SubscriptionPlan.DoesNotExist:
+            print("Free plan does not exist.")

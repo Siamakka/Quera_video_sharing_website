@@ -46,6 +46,13 @@ class Video(models.Model):
     is_public = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def has_access(self, user):
+        if user.subscription.plan.plan_name == 'premium':
+            return True
+        elif user.subscription.plan.plan_name == 'free':
+            return self.is_free_content
+        return False
+
 
     def __str__(self) -> str:
         return self.title
