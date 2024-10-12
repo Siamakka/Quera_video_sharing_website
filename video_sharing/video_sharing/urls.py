@@ -38,6 +38,11 @@ from video.views import VideoListCreateView
 from video.views import VideoDetailView
 from video.views import CommentDetailView
 from video.views import CommentListCreateView
+from video.views import VideoDetailWithViewCount
+from video.views import LikeVideoView
+from video.views import DislikeVideoView
+from video.views import AddCommentView
+from video.views import VideoCommentsView
 
 from subscription.views import create_payment
 from subscription.views import confirm_payment
@@ -80,13 +85,19 @@ urlpatterns = [
     path('api/update_profile/', UpdateProfileView.as_view(), name='update_profile'),
     path('api/admin/change_password/<int:pk>/', AdminChangePasswordView.as_view(), name='auth_admin_change_password'),
     path('api/admin/update_profile/<int:pk>/', AdminUpdateProfileView.as_view(), name='admin_update_profile'),
+
     path('categories/', CategoryListCreateView.as_view(), name='category-list-create'),
     path('categories/<int:pk>/', CategoryDetailView.as_view(), name='category-detail'),
-    path('videos/', VideoListCreateView.as_view(), name='video-list-create'),
-    path('videos/<int:pk>/', VideoDetailView.as_view(), name='video-detail'),
-    
+
+    path('videos/<int:pk>/', VideoDetailWithViewCount.as_view(), name='video-detail'),
+    path('videos/<int:video_id>/like/', LikeVideoView.as_view(), name='video-like'),
+    path('videos/<int:video_id>/dislike/', DislikeVideoView.as_view(), name='video-dislike'),
+    path('videos/<int:video_id>/add_comment/', AddCommentView.as_view(), name='add-comment'),
+    path('videos/<int:video_id>/comments/', VideoCommentsView.as_view(), name='video-comments'),
+
     path('comments/', CommentListCreateView.as_view(), name='comment-list-create'),
     path('comments/<int:pk>/', CommentDetailView.as_view(), name='comment-detail'),
+
     path('create-payment/<int:plan_id>/', create_payment, name='create_payment'),
     path('confirm-payment/<str:transaction_id>/', confirm_payment, name='confirm_payment'),
 ] + debug_toolbar_urls()
