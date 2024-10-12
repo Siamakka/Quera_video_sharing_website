@@ -84,6 +84,7 @@ urlpatterns = [
     path('categories/<int:pk>/', CategoryDetailView.as_view(), name='category-detail'),
     path('videos/', VideoListCreateView.as_view(), name='video-list-create'),
     path('videos/<int:pk>/', VideoDetailView.as_view(), name='video-detail'),
+    
     path('comments/', CommentListCreateView.as_view(), name='comment-list-create'),
     path('comments/<int:pk>/', CommentDetailView.as_view(), name='comment-detail'),
     path('create-payment/<int:plan_id>/', create_payment, name='create_payment'),
