@@ -28,7 +28,7 @@ def create_payment(request, plan_id):
         payment_status="pending"
     )
     
-    payment.payment_url = f"http://example.com/pay/{payment.transaction_id}"
+    # payment.payment_url = f"http://example.com/pay/{payment.transaction_id}"
     payment.save()
 
     return JsonResponse({
